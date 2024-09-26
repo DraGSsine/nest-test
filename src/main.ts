@@ -1,13 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors({
+  const options = {
     allowedHeaders: '*',
     origin: '*',
-    methods: '*',
-  })
+    credentials: false,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Ensure POST is included
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  };
+
+  const app = await NestFactory.create(AppModule, { rawBody: true });
+  app.enableCors(options);
   await app.listen(5000);
 }
+
 bootstrap();
